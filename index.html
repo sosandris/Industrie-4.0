@@ -7,28 +7,27 @@
 	integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
 	crossorigin="anonymous"></script>
 	<script type="text/javascript">
-		var counter = 0;
-		var intervalHandler = null;
-		function getMoxa1() {
-			if (intervalHandler !== null) clearInterval(intervalHandler);
-			intervalHandler = setInterval(getMoxa2,parseInt(document.getElementById('delay').value));
-		}
+		// var counter = 0;
+		// var intervalHandler = null;
+		// function getOpto1() {
+		// 	if (intervalHandler !== null) clearInterval(intervalHandler);
+		// 	intervalHandler = setInterval(getOpto2,parseInt(document.getElementById('delay').value));
+		// }
 
-		function getMoxa2() {
-			for (var channel = 0; channel <= 3; channel++) {
-				var settings = {
-					"async": true,
-					"crossDomain": true,
-					"url": "http://10.0.0.63/api/slot/0/io/do/"+channel+"/doStatus",
-					"method": "GET",
-					"headers": {
-						"content-type": "application/json",
+		function getOpto2() {
+			var ip = document.getElementById('ip').value;
+			var settings = {
+				"async": true,
+				"crossDomain": true,
+				"url": "http://"+ip+"/api/v1/device",
+				"method": "GET",
+				"headers": {
+					"content-type": "application/json",
+					"Authorization": "Basic cm86cm8=",
 					// "content-type": "text/plain",
-					"accept": "vdn.dac.v1",
 				},
 				"processData": false,
 				"data": "",
-				"cfChannel": channel,
 			};
 
 			$.ajax(settings).done(function (response) {
@@ -39,48 +38,50 @@
 				}
 			});
 		}
-	}
 
-	function fnCallback(msg) {
-		console.log('fnCallback msg:'+ JSON.stringify(msg));
-	}
+		// function fnCallback(msg) {
+		// 	console.log('fnCallback msg:'+ JSON.stringify(msg));
+		// }
 
-	function putMoxa(newStatus) {
-		var settings = {
-			"async": true,
-			"crossDomain": true,
-			"url": "http://10.0.0.63/api/slot/0/io/do",
-			"method": "PUT",
-			"headers": {
-				"content-type": "application/json",
-					// "content-type": "text/plain",
-					"accept": "vdn.dac.v1",
-				},
-				"processData": false,
-				//"data": "{\"slot\":0,\"io\":{\"do\":{\"0\":{\"doStatus\":"+newStatus.toString()+"}}}}",
-				"data": '{"slot":0,"io":{"do":[{"doIndex":0,"doMode":0,"doStatus":'+newStatus.toString()+'},{"doIndex":1,"doMode":0,"doStatus":'+newStatus.toString()+'},{"doIndex":2,"doMode":0,"doStatus":'+newStatus.toString()+'},{"doIndex":3,"doMode":0,"doStatus":'+newStatus.toString()+'}]}}',
-			};
+		// function putOpto(newStatus) {
+		// 	var settings = {
+		// 		"async": true,
+		// 		"crossDomain": true,
+		// 		"url": "http://10.0.0.63/api/slot/0/io/do",
+		// 		"method": "PUT",
+		// 		"headers": {
+		// 			"content-type": "application/json",
+		// 			// "content-type": "text/plain",
+		// 			"accept": "vdn.dac.v1",
+		// 		},
+		// 		"processData": false,
+		// 		//"data": "{\"slot\":0,\"io\":{\"do\":{\"0\":{\"doStatus\":"+newStatus.toString()+"}}}}",
+		// 		"data": '{"slot":0,"io":{"do":[{"doIndex":0,"doMode":0,"doStatus":'+newStatus.toString()+'},{"doIndex":1,"doMode":0,"doStatus":'+newStatus.toString()+'},{"doIndex":2,"doMode":0,"doStatus":'+newStatus.toString()+'},{"doIndex":3,"doMode":0,"doStatus":'+newStatus.toString()+'}]}}',
+		// 	};
 
-			$.ajax(settings).done(function (response) {
-				console.log(response);
-				getMoxa2();
-			});
-		}
+		// 	$.ajax(settings).done(function (response) {
+		// 		console.log(response);
+		// 		getOpto2();
+		// 	});
+		// }
 
-	    var script = document.createElement('script');
-        script.src = 'https://rawgit.com/paulirish/memory-stats.js/master/bookmarklet.js';
-        document.head.appendChild(script);
+		var script = document.createElement('script');
+		script.src = 'https://rawgit.com/paulirish/memory-stats.js/master/bookmarklet.js';
+		document.head.appendChild(script);
 
 	</script>
 </head>
 <body>
-	<button onclick="getMoxa1()">DoS </button><input type="number" id="delay" value="500"/>msec
-	<button onclick="getMoxa2()">GET w/jQuery</button>
-	<button onclick="putMoxa(0)">PUT 0</button>
-	<button onclick="putMoxa(1)">PUT 1</button>
-	<div><code id="result0"></code> ------ > <code id="status0"></code></div>
-	<div><code id="result1"></code> ------ > <code id="status1"></code></div>
-	<div><code id="result2"></code> ------ > <code id="status2"></code></div>
-	<div><code id="result3"></code> ------ > <code id="status3"></code></div>
+	<div>
+		<input id="ip" value="10.0.0.52" type="text" placeholder="IP address">
+	</div>
+	<!-- <button onclick="getOpto1()">DoS </button><input type="number" id="delay" value="500"/>msec -->
+	<button onclick="getOpto2()">GET w/jQuery</button>
+	<!-- <button onclick="putOpto(0)">PUT 0</button> -->
+	<!-- <button onclick="putOpto(1)">PUT 1</button> -->
+	<!-- <div><code id="result0"></code> ------ > <code id="status0"></code></div> -->
+	<!-- <div><code id="result1"></code> ------ > <code id="status1"></code></div> -->
+	<!-- <div><code id="result2"></code> ------ > <code id="status2"></code></div> -->
+	<!-- <div><code id="result3"></code> ------ > <code id="status3"></code></div> -->
 </body>
 </html>
