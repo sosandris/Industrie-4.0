@@ -61,19 +61,46 @@
 				"data": '{"slot":0,"io":{"do":[{"doIndex":0,"doMode":0,"doStatus":'+newStatus.toString()+'},{"doIndex":1,"doMode":0,"doStatus":'+newStatus.toString()+'},{"doIndex":2,"doMode":0,"doStatus":'+newStatus.toString()+'},{"doIndex":3,"doMode":0,"doStatus":'+newStatus.toString()+'}]}}',
 			};
 
-			$.ajax(settings).done(function (response) {
-				console.log(response);
-				getMoxa2();
-			});
+		$.ajax(settings).done(function (response) {
+			console.log(response);
+			getMoxa2();
+		});
+	}
+
+	var script = document.createElement('script');
+		script.src = 'https://rawgit.com/paulirish/memory-stats.js/master/bookmarklet.js';
+		document.head.appendChild(script);
+
+	function convertJsonToSpCall(json) {
+		try {
+			var obj = typeof json === "string" ? JSON.parse(json) : json;
+			var spName = obj.action;
+			var pars = obj.pars;
+			var paramList = [];
+			for (var key in pars) {
+				var val = pars[key];
+				if (typeof val === "string") {
+					val = "'" + val.replace(/'/g, "''") + "'";
+				}
+				paramList.push("@" + key + " = " + val);
+			}
+			var sqlCall = "EXEC " + spName + " " + paramList.join(", ");
+			document.getElementById("output").innerText = sqlCall;
+			return sqlCall;
+		} catch (e) {
+			document.getElementById("output").innerText = `Invalid JSON: ${JSON.stringify(e)}`;
+			return "";
 		}
-
-	    var script = document.createElement('script');
-        script.src = 'https://rawgit.com/paulirish/memory-stats.js/master/bookmarklet.js';
-        document.head.appendChild(script);
-
+	}
 	</script>
 </head>
 <body>
+	<h1>json param to sql stored proc call converter</h1>
+	<textarea name="json" id="json" onkeyup="convertJsonToSpCall(this.value)" rows="15" style="width:100%"></textarea>
+	<h2>Output</h2>
+	<pre id="output"></pre>
+	<hr>
+	<h1>HTTP test</h1>
 	<button onclick="getMoxa1()">DoS </button><input type="number" id="delay" value="500"/>msec
 	<button onclick="getMoxa2()">GET w/jQuery</button>
 	<button onclick="putMoxa(0)">PUT 0</button>
